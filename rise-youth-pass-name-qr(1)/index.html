@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <title>Rise Youth Pass</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <style>
+    :root{
+      --bg:#050505;
+      --panel:#0e0e0e;
+      --text:#fff;
+      --muted:#a8a8a8;
+      --accent:#ff7a00;
+      --line:#262626;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{
+      min-height:100vh;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      display:grid;
+      place-items:center;
+      padding:22px;
+      background:
+        radial-gradient(circle at 50% 115%, rgba(255,122,0,.22), transparent 35%),
+        var(--bg);
+    }
+    .shell{width:min(100%,430px)}
+    .hidden{display:none!important}
+
+    .setup,.pass{
+      background:linear-gradient(180deg,#121212,#070707);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 28px 80px rgba(0,0,0,.45);
+    }
+
+    .setup{padding:28px}
+    .logo{
+      font-weight:950;
+      font-size:28px;
+      line-height:.9;
+      letter-spacing:-1px;
+      margin-bottom:34px;
+    }
+    .logo span{color:var(--accent)}
+    h1{
+      font-size:34px;
+      line-height:1;
+      margin:0 0 10px;
+      letter-spacing:-1.2px;
+    }
+    .lede{
+      color:var(--muted);
+      line-height:1.5;
+      margin:0 0 28px;
+      font-size:14px;
+    }
+    label{
+      display:block;
+      font-size:12px;
+      font-weight:800;
+      color:#c9c9c9;
+      margin:0 0 7px;
+    }
+    input,select{
+      width:100%;
+      padding:14px 14px;
+      border:1px solid #343434;
+      background:#070707;
+      color:#fff;
+      border-radius:13px;
+      font-size:16px;
+      margin-bottom:15px;
+      outline:none;
+    }
+    input:focus,select:focus{border-color:#666}
+    button{
+      width:100%;
+      border:0;
+      border-radius:13px;
+      padding:14px;
+      background:var(--accent);
+      color:#111;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .note{
+      color:#777;
+      font-size:11px;
+      line-height:1.45;
+      text-align:center;
+      margin-top:14px;
+    }
+
+    .pass{
+      padding:30px 24px 24px;
+      overflow:hidden;
+      position:relative;
+      min-height:620px;
+    }
+    .pass:after{
+      content:"";
+      position:absolute;
+      width:165%;
+      height:145px;
+      left:-32%;
+      bottom:-80px;
+      background:var(--accent);
+      transform:rotate(-6deg);
+    }
+    .eyebrow{
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:2px;
+      font-size:12px;
+      font-weight:900;
+      margin-top:44px;
+      margin-bottom:8px;
+    }
+    .student{
+      font-size:42px;
+      margin:0 0 8px;
+      line-height:1;
+      letter-spacing:-1.7px;
+      text-transform:uppercase;
+      word-break:break-word;
+    }
+    .group{
+      color:#d7d7d7;
+      font-size:14px;
+      font-weight:800;
+      text-transform:uppercase;
+      margin-bottom:30px;
+    }
+    .qr-wrap{
+      width:248px;
+      height:248px;
+      margin:0 auto 18px;
+      background:#fff;
+      border-radius:19px;
+      display:grid;
+      place-items:center;
+      padding:14px;
+    }
+    #qrcode img,#qrcode canvas{width:100%!important;height:100%!important}
+    .scan{
+      text-align:center;
+      font-size:13px;
+      font-weight:950;
+      letter-spacing:1.4px;
+      margin-bottom:18px;
+    }
+    .pass-id{
+      position:relative;
+      z-index:1;
+      color:#777;
+      font-size:10px;
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .reset{
+      position:relative;
+      z-index:1;
+      display:block;
+      margin:0 auto;
+      width:auto;
+      background:transparent;
+      color:#777;
+      font-size:12px;
+      font-weight:700;
+      padding:8px 12px;
+      text-decoration:underline;
+    }
+    .install-tip{
+      color:#8e8e8e;
+      text-align:center;
+      font-size:12px;
+      line-height:1.45;
+      margin-top:16px;
+    }
+    @media (display-mode:standalone){
+      body{padding:16px}
+      .install-tip{display:none}
+      .pass{min-height:calc(100vh - 32px)}
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section id="setupView" class="setup">
+      <div class="logo">RISE<br><span>YOUTH</span></div>
+      <h1>Create Your Rise Pass</h1>
+      <p class="lede">Set this up once on your phone. After that, your pass will open ready to scan.</p>
+
+      <form id="setupForm">
+        <label for="firstName">First name</label>
+        <input id="firstName" autocomplete="given-name" required placeholder="Jordan" />
+
+        <label for="lastName">Last name</label>
+        <input id="lastName" autocomplete="family-name" required placeholder="Fahlman" />
+
+        <label for="group">Group</label>
+        <select id="group" required>
+          <option value="High School">High School</option>
+          <option value="Middle School">Middle School</option>
+        </select>
+
+        <button type="submit">Create My Pass</button>
+      </form>
+
+      <div class="note">
+        Prototype: your pass is saved only on this device. No student information is uploaded anywhere.
+      </div>
+    </section>
+
+    <section id="passView" class="hidden">
+      <div class="pass">
+        <div class="logo">RISE<br><span>YOUTH</span></div>
+        <div class="eyebrow">Rise Pass</div>
+        <h1 class="student" id="studentName"></h1>
+        <div class="group" id="studentGroup"></div>
+
+        <div class="qr-wrap"><div id="qrcode"></div></div>
+        <div class="scan">SCAN TO CHECK IN</div>
+        <div class="pass-id">QR value: <span id="passId"></span></div>
+        <button class="reset" id="resetBtn" type="button">Not you? Reset Pass</button>
+      </div>
+      <div class="install-tip">
+        iPhone: open in Safari → Share → Add to Home Screen.
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const STORAGE_KEY = 'riseYouthPassV2';
+
+    const setupView = document.getElementById('setupView');
+    const passView = document.getElementById('passView');
+    const setupForm = document.getElementById('setupForm');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function makeQrValue(first, last){
+      return `${first} ${last}`.trim();
+    }
+
+    function savePass(data){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadPass(){
+      try{
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      }catch{
+        return null;
+      }
+    }
+
+    function renderPass(data){
+      setupView.classList.add('hidden');
+      passView.classList.remove('hidden');
+
+      document.getElementById('studentName').textContent = `${data.firstName} ${data.lastName}`;
+      document.getElementById('studentGroup').textContent = data.group;
+      document.getElementById('passId').textContent = data.token;
+
+      const qr = document.getElementById('qrcode');
+      qr.innerHTML = '';
+
+      // The QR contains the student's exact first + last name.
+      new QRCode(qr, {
+        text: data.token,
+        width: 220,
+        height: 220,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    setupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const firstName = document.getElementById('firstName').value.trim();
+      const lastName = document.getElementById('lastName').value.trim();
+      const group = document.getElementById('group').value;
+
+      if(!firstName || !lastName) return;
+
+      const data = {
+        firstName,
+        lastName,
+        group,
+        token: makeQrValue(firstName, lastName)
+      };
+
+      savePass(data);
+      renderPass(data);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      passView.classList.add('hidden');
+      setupView.classList.remove('hidden');
+      document.getElementById('firstName').focus();
+    });
+
+    const existing = loadPass();
+    if(existing) renderPass(existing);
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    }
+  </script>
+</body>
+</html>
